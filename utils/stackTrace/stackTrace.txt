@@ -1,0 +1,4 @@
+TypeError: Cannot read property 'verificationCode' of null
+    at Object.execute (C:\Users\Colin Saari\Desktop\IT Stuff\3dlock-bot\listeners\commands\verify.js:18:29)
+    at processTicksAndRejections (internal/process/task_queues.js:93:5)
+    at async C:\Users\Colin Saari\Desktop\IT Stuff\3dlock-bot\listeners\message.js:59:5

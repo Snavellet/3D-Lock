@@ -1,0 +1,31 @@
+{
+  "name": "3dlock-bot",
+  "version": "0.0.1",
+  "description": "A bot for the discord server called 3dLock.",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon server-3d.js"
+  },
+  "keywords": [
+    "bot",
+    "discord-bot",
+    "3dlock",
+    "hacking-bot",
+    "3dlock-discord",
+    "discord-server",
+    "3dlock-discord-bot",
+    "3dlock-bot"
+  ],
+  "author": "Colin Felix Saari",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "dotenv": "^8.2.0",
+    "log4js": "^6.1.0",
+    "mongoose": "^5.8.3",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
