@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
         trim: true
     },
     verificationExpire: {
-        type: String,
+        type: Date,
         required: [true, 'A expiration date for the verificationCode is required!'],
         trim: true
     }
