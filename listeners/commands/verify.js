@@ -17,9 +17,10 @@ module.exports = {
 
         if(args[0] !== user.verificationCode || Date.now() > user.verificationExpire) {
             await message.reply('your code is either **invalid** or it has **expired**, I will send you a new one, please check your DMs.');
-            await User.findOneAndDelete({ guildID: message.guild.id, userID: message.author.id });
 
-            const verificationCode = await generateCode(message.member.guild, message.member.user);
+            let verificationCode = user.updateVerificationCode();
+            await user.save();
+
             const prefix = await getPrefix(message.member.guild.id, message.member.guild.name);
 
             return await message.author.send(`Please say \`${prefix}verify ${verificationCode}\` to verify again, remember this code ***expires*** in **${process.env.VERIFICATION_EXPIRE} minutes**.`);

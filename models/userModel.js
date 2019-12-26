@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -35,5 +36,14 @@ const userSchema = new mongoose.Schema({
         trim: true
     }
 });
+
+userSchema.methods.updateVerificationCode = function() {
+    const verificationCode = crypto.randomBytes(16).toString('hex');
+
+    this.verificationCode = verificationCode;
+    this.verificationExpire = Date.now() + Date.now() + process.env.VERIFICATION_EXPIRE * 60 * 1000;
+
+    return verificationCode;
+};
 
 module.exports = mongoose.model('users', userSchema);
