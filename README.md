@@ -5,4 +5,4 @@ This is a bot for a Discord server called [3D Lock](http://disboard.org/server/5
 * Primary Developer - Me
 
 # License
-* **MIT**
+* **Mozilla Public License 2.0**
