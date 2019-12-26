@@ -1,4 +1,4 @@
-TypeError: Cannot read property 'verificationCode' of null
-    at Object.execute (C:\Users\Colin Saari\Desktop\IT Stuff\3dlock-bot\listeners\commands\verify.js:18:29)
+TypeError: Prefix.save is not a function
+    at Object.execute (C:\Users\Colin Saari\Desktop\IT Stuff\3dlock-bot\listeners\commands\prefix.js:17:22)
     at processTicksAndRejections (internal/process/task_queues.js:93:5)
     at async C:\Users\Colin Saari\Desktop\IT Stuff\3dlock-bot\listeners\message.js:59:5
