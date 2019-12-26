@@ -41,7 +41,7 @@ userSchema.methods.updateVerificationCode = function() {
     const verificationCode = crypto.randomBytes(16).toString('hex');
 
     this.verificationCode = verificationCode;
-    this.verificationExpire = Date.now() + Date.now() + process.env.VERIFICATION_EXPIRE * 60 * 1000;
+    this.verificationExpire = Date.now() + process.env.VERIFICATION_EXPIRE * 60 * 1000;
 
     return verificationCode;
 };
