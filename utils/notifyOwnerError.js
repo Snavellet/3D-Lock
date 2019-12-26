@@ -1,15 +1,20 @@
 const fs = require('fs');
+const mkdirp = require('mkdirp-promise');
 const path = require('path');
+const { promisify } = require("es6-promisify");
 const Discord = require('discord.js');
-const logger = require('./logger');
+const getDirName = require('path').dirname;
 
 module.exports = async (client, err) => {
     const owner = client.users.get(process.env.BOT_OWNER_ID);
     const filePath = path.join(__dirname, '/stackTrace/stackTrace.txt');
 
-    fs.writeFile(filePath, err.stack, 'utf8', err => {
-        if(err) logger.error(err);
-    });
+    const writeFile = async (path, contents, option) => {
+        await mkdirp(getDirName(path));
+        await promisify(fs.writeFile)(path, contents, option);
+    };
+
+    await writeFile(filePath, err.stack, 'utf8');
 
     const errorEmbed = new Discord.RichEmbed()
         .setAuthor(owner.username, owner.avatarURL)
