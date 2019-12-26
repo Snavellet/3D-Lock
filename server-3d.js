@@ -16,7 +16,7 @@ const client = require('./app');
 
         logger.info('DB connection successful!')
     } catch (err) {
-        logger.error(`There is an connecting to DB, ${err}`);
+        logger.error(`There was an error connecting to DB, ${err}`);
     }
 })();
 
@@ -24,6 +24,6 @@ const client = require('./app');
     try {
         await client.login(process.env.TOKEN);
     } catch (err) {
-        logger.error(`There is an error logging in, ${err}`);
+        logger.error(`There was an error logging in, ${err}`);
     }
 })();
