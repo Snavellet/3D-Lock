@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.methods.updateVerificationCode = function() {
-    const verificationCode = crypto.randomBytes(16).toString('hex');
+    const verificationCode = crypto.randomBytes(process.env.VERIFICATION_CODE_SIZE * 1).toString('hex');
 
     this.verificationCode = verificationCode;
     this.verificationExpire = Date.now() + process.env.VERIFICATION_EXPIRE * 60 * 1000;
