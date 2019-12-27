@@ -14,19 +14,28 @@ module.exports = client => {
         let prefix = await Prefix.findOne({ guildID: mainServer.id });
         prefix = prefix.prefix;
 
+        const stopBypass = async (allUsers, member) => {
+            const verificationCode = allUsers.updateVerificationCode();
+            await allUsers.save();
+
+            await member.setRoles([roleID], 'Bypassing Verification Is Restricted');
+            await member.user.send(`Please say \`${prefix}verify ${verificationCode}\` to verify again, remember this code ***expires*** in **${process.env.VERIFICATION_EXPIRE} minutes**.`);
+        };
+
         setInterval( async () => {
             const allUsers = await User.find({ guildID: mainServer.id });
 
             for(const i in allUsers) {
                 const member = mainServer.members.get(allUsers[i].userID);
                 if(!member) return;
+                if(member.roles.array().length > 2) {
+                    await stopBypass(allUsers[i], member);
+                    continue;
+                }
+
                 if(member.roles.some(role => role.id === roleID)) continue;
 
-                const verificationCode = allUsers[i].updateVerificationCode();
-                await allUsers[i].save();
-
-                await member.setRoles([roleID], 'Bypassing Verification Is Restricted');
-                await member.user.send(`Please say \`${prefix}verify ${verificationCode}\` to verify again, remember this code ***expires*** in **${process.env.VERIFICATION_EXPIRE} minutes**.`);
+                await stopBypass(allUsers[i], member);
             }
 
         }, 5000);
