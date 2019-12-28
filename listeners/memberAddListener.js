@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const Role = require('../models/roleModel');
+const roleExist = require('../utils/roleExist');
 const catchAsyncMember = require('../utils/catchAsync/catchAsyncMemberAdd');
 const getPrefix = require('../utils/getPrefix');
 const generateCode = require('../utils/generateVerificationCode');
@@ -7,7 +8,8 @@ const generateCode = require('../utils/generateVerificationCode');
 module.exports = catchAsyncMember(async member => {
     if(member.user.bot) {
         const role = await Role.findOne({ guildID: member.guild.id, event: 'bot'});
-        if(!role) return;
+        const roleCheckExist = await roleExist(member.guild, role.roleID, 'botrole');
+        if(!role || !roleCheckExist) return;
 
         return await member.addRole(role.roleID, `${member.guild.name} Bot AutoRole Process`);
     }
