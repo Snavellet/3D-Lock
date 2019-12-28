@@ -8,8 +8,7 @@ const generateCode = require('../utils/generateVerificationCode');
 module.exports = catchAsyncMember(async member => {
     if(member.user.bot) {
         const role = await Role.findOne({ guildID: member.guild.id, event: 'bot'});
-        const roleCheckExist = await roleExist(member.guild, role.roleID, 'botrole');
-        if(!role || !roleCheckExist) return;
+        if(!role || !await roleExist(member.guild, role.roleID, 'botrole')) return;
 
         return await member.addRole(role.roleID, `${member.guild.name} Bot AutoRole Process`);
     }

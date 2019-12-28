@@ -10,8 +10,7 @@ module.exports = {
     cooldown: 5,
     async execute(message, args) {
         let role = await Role.findOne({ guildID: message.guild.id, event: 'beforeVerification' });
-        let roleExist = await roleExistCheck(message.guild, role.roleID, 'autorole');
-        if(!role || !roleExist) return await message.reply('please contact the admins for assistance, I cannot check whether you are unverified.');
+        if(!role || !await roleExistCheck(message.guild, role.roleID, 'autorole')) return await message.reply('please contact the admins for assistance, I cannot check whether you are unverified.');
         if(!message.member.roles.has(role.roleID)) return;
 
         const user = await User.findOne({ guildID: message.guild.id, userID: message.author.id });
@@ -28,8 +27,7 @@ module.exports = {
         }
 
         role = await Role.findOne({ guildID: message.guild.id, event: 'afterVerification' });
-        roleExist = await roleExistCheck(message.guild, role.roleID, 'aftver');
-        if(!role || !roleExist) return await message.reply('please contact the admins for assistance, the after verification is not set yet.');
+        if(!role || !await roleExistCheck(message.guild, role.roleID, 'aftver')) return await message.reply('please contact the admins for assistance, the after verification is not set yet.');
 
         await User.findOneAndDelete({ guildID: message.guild.id, userID: message.author.id });
 
