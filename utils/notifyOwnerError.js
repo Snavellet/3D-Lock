@@ -18,7 +18,7 @@ module.exports = async (client, err) => {
 
     const errorEmbed = new Discord.RichEmbed()
         .setAuthor(owner.username, owner.avatarURL)
-        .setColor('#45A6CC')
+        .setColor('#E02424')
         .setTitle('There was an error in the bot!')
         .addField('Error Message', err.message)
         .setFooter('I hope you fix the error, you are the best bot maker!', 'https://img.icons8.com/cotton/2x/error--v1.png')

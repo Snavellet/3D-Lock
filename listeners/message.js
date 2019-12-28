@@ -33,7 +33,7 @@ module.exports = catchAsyncMessage(async message => {
     const command = client.commands.get(commandName);
 
     if (command.args && !args.length) {
-        return message.channel.send(`You didn't provide any arguments, ${message.author.tag}!`);
+        return message.channel.send(`You didn't provide any arguments, <@${message.author.id}>!`);
     }
 
     if (!cooldowns.has(command.name)) {

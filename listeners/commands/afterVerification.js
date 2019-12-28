@@ -6,7 +6,7 @@ module.exports = {
     args: true,
     cooldown: 5,
     async execute(message, args) {
-        if(!message.member.hasPermission('ADMINISTRATOR')) return;
+        if(!message.member.hasPermission('MANAGE_ROLES')) return;
 
         let role = message.guild.roles.get(args[0]);
 

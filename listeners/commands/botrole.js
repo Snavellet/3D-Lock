@@ -1,8 +1,8 @@
 const Role = require('../../models/roleModel');
 
 module.exports = {
-    name: 'autorole',
-    description: 'The purpose of this command is to set the role for giving new members.',
+    name: 'botrole',
+    description: 'The purpose of this command is to set the role for giving new bots.',
     args: true,
     cooldown: 5,
     async execute(message, args) {
@@ -17,7 +17,7 @@ module.exports = {
             guildName: message.guild.name,
             roleID: role.id,
             roleName: role.name,
-            event: 'beforeVerification'
+            event: 'bot'
         });
 
         await message.reply(`successfully set the role to <@&${role.roleID}>!`);

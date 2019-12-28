@@ -1,6 +1,6 @@
 const User = require('../../models/userModel');
 const Role = require('../../models/roleModel');
-const generateCode = require('../../utils/generateVerificationCode');
+const roleExistCheck = require('../../utils/roleExist');
 const getPrefix = require('../../utils/getPrefix');
 
 module.exports = {
@@ -10,7 +10,8 @@ module.exports = {
     cooldown: 5,
     async execute(message, args) {
         let role = await Role.findOne({ guildID: message.guild.id, event: 'beforeVerification' });
-        if(!role) return await message.reply('please contact the admins for assistance, I cannot check whether you are unverified.');
+        let roleExist = await roleExistCheck(message.guild, role.roleID, 'autorole');
+        if(!role || !roleExist) return await message.reply('please contact the admins for assistance, I cannot check whether you are unverified.');
         if(!message.member.roles.has(role.roleID)) return;
 
         const user = await User.findOne({ guildID: message.guild.id, userID: message.author.id });
@@ -27,7 +28,8 @@ module.exports = {
         }
 
         role = await Role.findOne({ guildID: message.guild.id, event: 'afterVerification' });
-        if(!role) return await message.reply('please contact the admins for assistance, the after verification is not set yet.');
+        roleExist = await roleExistCheck(message.guild, role.roleID, 'aftver');
+        if(!role || !roleExist) return await message.reply('please contact the admins for assistance, the after verification is not set yet.');
 
         await User.findOneAndDelete({ guildID: message.guild.id, userID: message.author.id });
 

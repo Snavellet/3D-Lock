@@ -26,8 +26,8 @@ const prefixModel = new mongoose.Schema({
         type: String,
         trim: true,
         validator: {
-            enum: ['beforeVerification', 'afterVerification'],
-            message: 'It can be only memberAdd and memberLeft!'
+            enum: ['beforeVerification', 'afterVerification', 'bot'],
+            message: 'It can be only memberAdd, memberLeft and bot!'
         }
     }
 });
