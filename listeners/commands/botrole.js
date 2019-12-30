@@ -1,4 +1,5 @@
-const Role = require('../../models/roleModel');
+const roleCreateAndUpdate = require('../../utils/createAndUpdateRoles');
+const roleSame = require('../../utils/roleSame');
 
 module.exports = {
     name: 'botrole',
@@ -9,16 +10,14 @@ module.exports = {
         if(!message.member.hasPermission('MANAGE_ROLES')) return;
 
         let role = message.guild.roles.get(args[0]);
+        const event = 'bot';
 
         if(!role) return await message.reply('invalid role ID, please try again.');
+        if(await roleSame(message.guild.id, event, role.id)) {
+            return await message.reply('that\'s the role that is currently set to!');
+        }
 
-        role = await Role.create({
-            guildID: message.guild.id,
-            guildName: message.guild.name,
-            roleID: role.id,
-            roleName: role.name,
-            event: 'bot'
-        });
+        role = await roleCreateAndUpdate(message.guild, role, event);
 
         await message.reply(`successfully set the role to <@&${role.roleID}>!`);
     },

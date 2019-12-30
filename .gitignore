@@ -1,4 +1,4 @@
 node_modules
 config.env
 .idea
-./utils/stackTrace/stackTrace.txt
+./utils/stackTrace
