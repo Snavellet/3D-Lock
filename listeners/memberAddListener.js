@@ -28,4 +28,5 @@ module.exports = catchAsyncMember(async member => {
         .setFooter('Please read the rules and enjoy staying in the server!', 'https://papermilkdesign.com/images/emoji-clipart-iphone-1.jpg');
 
     await member.user.send(welcomeEmbed);
+    await member.user.send(`For ***mobile*** users, please say \`${prefix}verify ${verificationCode}\` to verify, remember this code ***expires*** in **${process.env.VERIFICATION_EXPIRE} minutes**.`);
 });
