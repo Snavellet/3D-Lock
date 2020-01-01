@@ -18,7 +18,7 @@ module.exports = {
         if(args[0] !== user.verificationCode || Date.now() > user.verificationExpire) {
             await message.reply('your code is either **invalid** or it has **expired**, I will send you a new one, please check your DMs.');
 
-            let verificationCode = user.updateVerificationCode();
+            const verificationCode = user.updateVerificationCode();
             await user.save();
 
             const prefix = await getPrefix(message.member.guild.id, message.member.guild.name);
