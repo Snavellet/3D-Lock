@@ -123,7 +123,7 @@ module.exports = {
                         });
                     }
 
-                    await message.channel.send(`<@${guildMember.user.id}>, you have \`${warning}\` warning(s) out of \`${warningThreshold}\`!`);
+                    await message.channel.send(`<@${guildMember.user.id}>, you have \`${warning.warnings}\` warning(s) out of \`${warningThreshold}\` for \`${reason.split(' ')[1]}\``);
                 }
             };
 
