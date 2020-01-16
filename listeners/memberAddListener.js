@@ -4,6 +4,7 @@ const roleExist = require('../utils/roleExist');
 const catchAsyncMember = require('../utils/catchAsync/catchAsyncMemberAdd');
 const getPrefix = require('../utils/getPrefix');
 const generateCode = require('../utils/generateVerificationCode');
+const Blacklist = require('../models/blackListModel');
 
 module.exports = catchAsyncMember(async member => {
     if(member.user.bot) {
@@ -11,6 +12,14 @@ module.exports = catchAsyncMember(async member => {
         if(!role || !await roleExist(member.guild, role.roleID, 'botrole')) return;
 
         return await member.addRole(role.roleID, `${member.guild.name} Bot AutoRole Process`);
+    }
+
+    const blacklistedUser = await Blacklist.findOne({ guildID: member.guild.id, userID: member.user.id });
+    if(blacklistedUser) {
+        return await member.ban({
+            days: 7,
+            reason: `Blacklisted: ${blacklistedUser.reason}`
+        });
     }
 
     const role = await Role.findOne({ guildID: member.guild.id, event: 'beforeVerification' });
