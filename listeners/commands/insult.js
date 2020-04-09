@@ -10,7 +10,9 @@ module.exports = {
         insult = insult.insult;
         insult = insult.toLowerCase();
 
-
+        if (message.mentions.users.array().length > 0) {
+            return await message.channel.send(`<@${message.mentions.users.array()[0].id}>, ${insult}`);
+        }
 
         await message.reply(insult);
     },

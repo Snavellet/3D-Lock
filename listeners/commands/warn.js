@@ -18,7 +18,7 @@ module.exports = {
             const realWarnMentions = async userNewArr => {
                 for(const user in userNewArr) {
                     const guildMember = message.guild.members.get(userNewArr[user].id);
-                    // if(guildMember.hasPermission('KICK_MEMBERS')) return await message.reply('you cannot warn a mod!');
+                    if(guildMember.hasPermission('KICK_MEMBERS')) return await message.reply('you cannot warn a mod!');
 
                     if(!guildMember) {
                         await message.reply(`${userNewArr[user].id} doesnt exist in this server anymore!`);
