@@ -48,7 +48,7 @@ module.exports = {
                     let warningThreshold = await WarningThreshold.findOne({ guildID: message.guild.id });
                     if(!warningThreshold) return await message.reply('cannot check for the warning threshold, please try again later!');
                     warningThreshold = warningThreshold.threshold;
-                    // warning = warning.warnings;
+                    warning = warning.warnings;
 
                     if(warning.warnings === warningThreshold) {
                         await message.channel.send(`<@${guildMember.user.id}>, you have reached \`${warning}\` warning(s) out of \`${warningThreshold}\`, you will be banned!`);
@@ -62,19 +62,17 @@ module.exports = {
                         });
 
                         return await guildMember.ban({
-                            days: 7,
                             reason
                         });
                     }
 
-                    await message.channel.send(`<@${guildMember.user.id}>, you have \`${warning.warnings}\` warning(s) out of \`${warningThreshold}\` for \`${reason.split(' ')[1]}\``);
+                    await message.channel.send(`<@${guildMember.user.id}>, you have \`${warning}\` warning(s) out of \`${warningThreshold}\` for \`${reason.split(' ')[1]}\``);
                 }
             };
 
             const realWarnIDs = async userNewIDsArray => {
                 for(const user in userNewIDsArray) {
                     const guildMember = message.guild.members.get(userNewIDsArray[user]);
-                    // if(guildMember.hasPermission('KICK_MEMBERS')) return await message.reply('you cannot kick a mod!');
 
                     if(!guildMember) {
                         await message.reply(`${userNewIDsArray[user]} doesnt exist in this server anymore!`);
@@ -123,7 +121,7 @@ module.exports = {
                         });
                     }
 
-                    await message.channel.send(`<@${guildMember.user.id}>, you have \`${warning.warnings}\` warning(s) out of \`${warningThreshold}\` for \`${reason.split(' ')[1]}\``);
+                    await message.channel.send(`<@${guildMember.user.id}>, you have \`${warning}\` warning(s) out of \`${warningThreshold}\` for \`${reason.split(' ')[1]}\``);
                 }
             };
 

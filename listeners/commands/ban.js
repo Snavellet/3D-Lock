@@ -16,15 +16,15 @@ module.exports = {
             const realBanMentions = async userNewArr => {
                 for(const user in userNewArr) {
                     const guildMember = message.guild.members.get(userNewArr[user].id);
-                    if(guildMember.hasPermission('BAN_MEMBERS')) return await message.reply('you cannot ban a mod!');
 
                     if(!guildMember) {
                         await message.reply(`${userNewArr[user].id} doesnt exist in this server anymore!`);
                         continue;
                     }
 
+                    if(guildMember && guildMember.hasPermission('BAN_MEMBERS')) return await message.reply('you cannot ban a mod!');
+
                     await guildMember.ban({
-                        days: 7,
                         reason
                     });
 
@@ -42,15 +42,15 @@ module.exports = {
             const realBanIDs = async userNewIDsArray => {
                 for(const user in userNewIDsArray) {
                     const guildMember = message.guild.members.get(userNewIDsArray[user]);
-                    if(guildMember.hasPermission('BAN_MEMBERS')) return await message.reply('you cannot ban a mod!');
 
                     if(!guildMember) {
                         await message.reply(`${userNewIDsArray[user]} doesnt exist in this server anymore!`);
                         continue;
                     }
 
+                    if(guildMember.hasPermission('BAN_MEMBERS')) return await message.reply('you cannot ban a mod!');
+
                     await guildMember.ban({
-                        days: 7,
                         reason
                     });
 
