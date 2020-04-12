@@ -25,7 +25,7 @@ module.exports = {
                         continue;
                     }
 
-                    let warning = await Warning.findOne({ guildID: guildMember.guild.id, guildName: guildMember.guild.name });
+                    let warning = await Warning.findOne({ guildID: guildMember.guild.id, userID: guildMember.id });
                     if(!warning) {
                         warning = await Warning.create({
                             guildID: message.guild.id,
@@ -79,7 +79,7 @@ module.exports = {
                         continue;
                     }
 
-                    let warning = await Warning.findOne({ guildID: guildMember.guild.id, guildName: guildMember.guild.name });
+                    let warning = await Warning.findOne({ guildID: guildMember.guild.id, userID: guildMember.id });
                     if(!warning) {
                         warning = await Warning.create({
                             guildID: message.guild.id,
@@ -116,7 +116,6 @@ module.exports = {
                         });
 
                         return await guildMember.ban({
-                           days: 7,
                            reason
                         });
                     }

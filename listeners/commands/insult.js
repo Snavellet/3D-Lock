@@ -27,7 +27,7 @@ module.exports = {
         }
 
         if (message.mentions.users.array().length > 0) {
-            if (message.mentions.users.array()[0].id) {
+            if (checkOwner(message.mentions.users.array()[0].id)) {
                 await message.react('🖕');
                 return message.reply('you cannot insult my owner idiot!');
             }
