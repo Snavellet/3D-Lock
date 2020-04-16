@@ -23,15 +23,15 @@
   "author": "Colin Felix Saari",
   "license": "MPL-2.0",
   "dependencies": {
-    "discord.js": "^11.5.1",
+    "discord.js": "^11.6.4",
     "dotenv": "^8.2.0",
-    "es6-promisify": "^6.0.2",
-    "log4js": "^6.1.0",
+    "es6-promisify": "^6.1.0",
+    "log4js": "^6.2.0",
     "mkdirp-promise": "^5.0.1",
-    "mongoose": "^5.8.3",
+    "mongoose": "^5.9.9",
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.3"
   }
 }
