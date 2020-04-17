@@ -10,8 +10,8 @@ module.exports = {
 
 			const purgeMessages = async message => {
 				await message.delete();
-				await message.channel.bulkDelete((args[0] * 1));
-				const purged = await message.channel.send(`I have purged **${args[0]}** message(s)!`);
+				const purgedMessages = await message.channel.bulkDelete((args[0] * 1));
+				const purged = await message.channel.send(`I have purged **${purgedMessages.array().length}** message(s)!`);
 
 				setTimeout(async () => {
 					await purged.delete();
