@@ -2,6 +2,7 @@ const User = require('../../models/userModel');
 const Role = require('../../models/roleModel');
 const roleExistCheck = require('../../utils/roleExist');
 const getPrefix = require('../../utils/getPrefix');
+const generateCode = require('../../utils/generateVerificationCode');
 
 module.exports = {
 	name: 'verify',
@@ -15,15 +16,21 @@ module.exports = {
 
 		const user = await User.findOne({ guildID: message.guild.id, userID: message.author.id });
 
-		if(args[0] !== user.verificationCode || Date.now() > user.verificationExpire) {
-			await message.reply('your code is either **invalid** or it has **expired**, I will send you a new one, please check your DMs.');
+		const invalidMessage = async (message, verificationCode) => {
+			await message.reply('your code is either **invalid** or it has **expired**, I will send you a new one.')
+			const prefix = await getPrefix(message.member.guild.id, message.member.guild.name);
+			return message.channel.send(`Please say \`${prefix}verify ${verificationCode}\` to verify again, remember this code ***expires*** in **${process.env.VERIFICATION_EXPIRE} minutes**.`);
+		}
 
+		if(!user) {
+			const verificationCode = await generateCode(message.guild, message.author);
+			return await invalidMessage(message, verificationCode);
+		}
+
+		if(args[0] !== user.verificationCode || Date.now() > user.verificationExpire) {
 			const verificationCode = user.updateVerificationCode();
 			await user.save();
-
-			const prefix = await getPrefix(message.member.guild.id, message.member.guild.name);
-
-			return await message.author.send(`Please say \`${prefix}verify ${verificationCode}\` to verify again, remember this code ***expires*** in **${process.env.VERIFICATION_EXPIRE} minutes**.`);
+			return await invalidMessage(message, verificationCode);
 		}
 
 		role = await Role.findOne({ guildID: message.guild.id, event: 'afterVerification' });

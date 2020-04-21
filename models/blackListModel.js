@@ -20,7 +20,7 @@ const blackListSchema = new mongoose.Schema({
     userTag: {
         type: String,
         required: [true, 'An user tag is required!'],
-        unique: [true, 'An user ID is required to be unique!'],
+        unique: [true, 'An user tag is required to be unique!'],
         trim: true
     },
     reason: {

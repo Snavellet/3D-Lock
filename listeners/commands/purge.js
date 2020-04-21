@@ -26,18 +26,24 @@ module.exports = {
 				errors: ['time ran out!']
 			});
 
-			if(collected.first().content.toLowerCase() === 'y') {
+			try {
+				if(collected.first().content.toLowerCase() === 'y') {
+					await confirmation.delete();
+					await collected.first().delete();
+					await purgeMessages(message);
+				} else if(collected.first().content.toLowerCase() === 'n') {
+					await confirmation.delete();
+					await collected.first().delete();
+					await collected.first().reply('ok canceled!');
+				} else {
+					await confirmation.delete();
+					await collected.first().delete();
+					await collected.first().reply('timed out, you didn\'t answer correctly!')
+				}
+			} catch(err) {
+				await message.delete();
 				await confirmation.delete();
-				await collected.first().delete();
-				await purgeMessages(message);
-			} else if(collected.first().content.toLowerCase() === 'n') {
-				await confirmation.delete();
-				await collected.first().delete();
-				await collected.first().reply('ok canceled!');
-			} else {
-				await confirmation.delete();
-				await collected.first().delete();
-				await collected.first().reply('timed out, you didn\'t answer correctly!')
+				await message.reply('time ran out, you didn\'t answer!');
 			}
 		}
 	},

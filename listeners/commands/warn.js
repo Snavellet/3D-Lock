@@ -50,7 +50,7 @@ module.exports = {
 					warningThreshold = warningThreshold.threshold;
 					warning = warning.warnings;
 
-					if(warning.warnings === warningThreshold) {
+					if(warning >= warningThreshold) {
 						await message.channel.send(`<@${guildMember.user.id}>, you have reached \`${warning}\` warning(s) out of \`${warningThreshold}\`, you will be banned!`);
 
 						await Blacklist.create({
@@ -104,7 +104,7 @@ module.exports = {
 					warningThreshold = warningThreshold.threshold;
 					warning = warning.warnings;
 
-					if(warning === warningThreshold) {
+					if(warning >= warningThreshold) {
 						await message.channel.send(`<@${guildMember.user.id}>, you have reached \`${warning}\` warning(s) out of \`${warningThreshold}\`, you will be banned!`);
 
 						await Blacklist.create({
