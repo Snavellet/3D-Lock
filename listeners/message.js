@@ -56,5 +56,5 @@ module.exports = new CatchAsync(async message => {
 	timestamps.set(message.author.id, now);
 	setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
-	await command.execute(message);
+	await command.execute(message, args);
 }).message();

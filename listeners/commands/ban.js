@@ -8,13 +8,19 @@ module.exports = {
 	async execute(message, args) {
 		if(!message.member.hasPermission('BAN_MEMBERS')) return;
 
-		const matchedIDs = message.content.match(/(\s+)(\d+)/g);
+		const matchedIDs = args.filter(el => message.guild.members.get(el));
+		for(const i in args) {
+			if(message.guild.members.get(args[i])) {
+				delete args[i];
+			}
+		}
 		const noMentions = 'please mention someone to ban!';
 		const cannotBanModMessage = 'you cannot ban a mod!';
+		const userDoesntExistMessage = 'does\'nt exist in this server anymore!';
 
 		let reason;
 
-		const banUser = async (guildMember, reason) => {
+		const banManage = async (guildMember, reason) => {
 			await guildMember.ban({
 				reason
 			});
@@ -25,7 +31,7 @@ module.exports = {
 				guildName: message.guild.name,
 				userID: guildMember.user.id,
 				userTag: guildMember.user.tag,
-				reason: reason.split(' ').join(' ')
+				reason
 			});
 		}
 
@@ -35,13 +41,13 @@ module.exports = {
 					const guildMember = message.guild.members.get(userNewArr[user].id);
 
 					if(!guildMember) {
-						await message.reply(`${userNewArr[user].id} doesnt exist in this server anymore!`);
+						await message.reply(`${userNewArr[user].id} ${userDoesntExistMessage}`);
 						continue;
 					}
 
 					if(guildMember && guildMember.hasPermission('BAN_MEMBERS')) return await message.reply(cannotBanModMessage);
 
-					await banUser(guildMember, reason)
+					await banManage(guildMember, reason)
 				}
 			};
 
@@ -50,13 +56,13 @@ module.exports = {
 					const guildMember = message.guild.members.get(userNewIDsArray[user]);
 
 					if(!guildMember) {
-						await message.reply(`${userNewIDsArray[user]} doesnt exist in this server anymore!`);
+						await message.reply(`${userNewIDsArray[user]} ${userDoesntExistMessage}`);
 						continue;
 					}
 
 					if(guildMember && guildMember.hasPermission('BAN_MEMBERS')) return await message.reply(cannotBanModMessage);
 
-					await banUser(guildMember, reason);
+					await banManage(guildMember, reason);
 				}
 			};
 
@@ -71,19 +77,14 @@ module.exports = {
 
 		if(message.mentions.users.array().length >= 1) {
 			const mentionedArray = message.mentions.users.array();
-			const lastElArr = args.slice(-1).pop();
 
-			if(lastElArr && lastElArr.match(/^\w+/g)) reason = `${message.author.tag}: ${lastElArr}`;
+			reason = `${message.author.tag}: ${args.join(' ')}`;
 
 			await ban(mentionedArray, false, reason);
 		} else if(matchedIDs) {
-			const newMatchedIDs = [];
-			matchedIDs.forEach(el => newMatchedIDs.push(el.replace(/^\s+/g, '')));
-			const lastElArr = args.slice(-1).pop();
+			reason = `${message.author.tag}: ${args.join(' ')}`;
 
-			if(lastElArr && lastElArr.match(/^\w+/g)) reason = `${message.author.tag}: ${lastElArr}`;
-
-			await ban(false, newMatchedIDs, reason);
+			await ban(false, matchedIDs, reason);
 		} else {
 			return await message.reply(noMentions);
 		}

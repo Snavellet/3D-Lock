@@ -9,7 +9,7 @@ module.exports = {
         if (!message.member.hasPermission('BAN_MEMBERS')) return;
 
         if(message.author.id === '706229597334667264') {
-            await message.reply('I\'ve unbanned the guy successfully!');
+            return await message.reply('I\'ve unbanned the guy successfully!');
         }
 
         const blacklist = await Blacklist.find({ guildID: message.guild.id });

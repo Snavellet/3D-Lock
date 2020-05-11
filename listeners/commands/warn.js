@@ -10,10 +10,15 @@ module.exports = {
 	async execute(message, args) {
 		if(!message.member.hasPermission('KICK_MEMBERS')) return;
 
-		const matchedIDs = message.content.match(/(\s+)(\d+)/g);
+		const matchedIDs = args.filter(el => message.guild.members.get(el));
+		for(const i in args) {
+			if(message.guild.members.get(args[i])) {
+				delete args[i];
+			}
+		}
 		const noMentions = 'please mention someone to warn!';
 		const cannotWarnModMessage = 'you cannot warn a mod!';
-		const userDoesntExistMessage = 'doesnt exist in this server anymore!';
+		const userDoesntExistMessage = 'does\'nt exist in this server anymore!';
 
 		let reason;
 
@@ -51,7 +56,7 @@ module.exports = {
 					guildName: message.guild.name,
 					userID: guildMember.user.id,
 					userTag: guildMember.user.tag,
-					reason: reason.split(' ')[1]
+					reason
 				});
 
 				return await guildMember.ban({
@@ -102,19 +107,14 @@ module.exports = {
 
 		if(message.mentions.users.array().length >= 1) {
 			const mentionedArray = message.mentions.users.array();
-			const lastElArr = args.slice(-1).pop();
 
-			if(lastElArr && lastElArr.match(/^\w+/g)) reason = `${message.author.tag}: ${lastElArr}`;
+			reason = `${message.author.tag}: ${args.join(' ')}`;
 
 			await warn(mentionedArray, false, reason);
 		} else if(matchedIDs) {
-			const newMatchedIDs = [];
-			matchedIDs.forEach(el => newMatchedIDs.push(el.replace(/^\s+/g, '')));
-			const lastElArr = args.slice(-1).pop();
+			reason = `${message.author.tag}: ${args.join(' ')}`;
 
-			if(lastElArr && lastElArr.match(/^\w+/g)) reason = `${message.author.tag}: ${lastElArr}`;
-
-			await warn(false, newMatchedIDs, reason);
+			await warn(false, matchedIDs, reason);
 		} else {
 			return await message.reply(noMentions);
 		}
