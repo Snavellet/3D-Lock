@@ -1,16 +1,17 @@
 const Discord = require('discord.js');
 const Channel = require('../models/channelModel');
 const Role = require('../models/roleModel');
-const roleExist = require('../utils/roleExist');
-const catchAsyncMember = require('../utils/catchAsync/catchAsyncMemberAdd');
-const getPrefix = require('../utils/getPrefix');
-const generateCode = require('../utils/generateVerificationCode');
+const GuildUtil = require('../utils/GuildUtil');
+const CatchAsync = require('../utils/CatchAsync');
 const Blacklist = require('../models/blackListModel');
 
-module.exports = catchAsyncMember(async member => {
+module.exports = new CatchAsync(async member => {
 	if(member.user.bot) {
 		const role = await Role.findOne({ guildID: member.guild.id, event: 'bot' });
-		if(!role || !await roleExist(member.guild, role.roleID, 'botrole')) return;
+		if(!role) return;
+		role.id = role.roleID;
+		const guildUtil = new GuildUtil(member.guild, role);
+		if(!await guildUtil.roleExist('botrole')) return;
 
 		return await member.addRole(role.roleID, `${member.guild.name} Bot AutoRole Process`);
 	}
@@ -25,8 +26,9 @@ module.exports = catchAsyncMember(async member => {
 	const role = await Role.findOne({ guildID: member.guild.id, event: 'beforeVerification' });
 	await member.setRoles([role.roleID], `${member.guild.name} AutoRole Process`);
 
-	const prefix = await getPrefix(member.guild.id, member.guild.name);
-	const verificationCode = await generateCode(member.guild, member.user);
+	const guildUtil = new GuildUtil(member.guild);
+	const prefix = await guildUtil.getPrefix();
+	const verificationCode = await guildUtil.generateVerificationCode(member.user);
 
 	const event = 'verification';
 	const verificationChannel = await Channel.findOne({
@@ -52,4 +54,4 @@ module.exports = catchAsyncMember(async member => {
 	} catch(e) {
 		await channel.send(`Fallback: <@${member.id}>, please say \`${prefix}verify ${verificationCode}\` to verify, remember this code ***expires*** in **${process.env.VERIFICATION_EXPIRE} minutes**.`);
 	}
-});
+}).memberAdd();

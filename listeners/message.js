@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const fs = require('fs');
-const catchAsyncMessage = require('../utils/catchAsync/catchAsyncMessage');
-const getPrefix = require('../utils/getPrefix');
+const CatchAsync = require('../utils/CatchAsync');
+const GuildUtil = require('../utils/GuildUtil');
 const cooldowns = new Discord.Collection();
 
 const client = require('../app');
@@ -17,11 +17,11 @@ for(const file of commandFiles) {
 }
 
 
-module.exports = catchAsyncMessage(async message => {
+module.exports = new CatchAsync(async message => {
 	if(message.author.id === message.client.id) return;
 	if(message.channel.type === 'dm' || message.author.bot) return;
 
-	const prefix = await getPrefix(message.guild.id, message.guild.name);
+	const prefix = await new GuildUtil(message.guild).getPrefix();
 
 	if(!message.content.startsWith(prefix)) return;
 
@@ -56,5 +56,5 @@ module.exports = catchAsyncMessage(async message => {
 	timestamps.set(message.author.id, now);
 	setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
-	await command.execute(message, args);
-});
+	await command.execute(message);
+}).message();

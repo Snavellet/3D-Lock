@@ -10,7 +10,24 @@ module.exports = {
 
 		const matchedIDs = message.content.match(/(\s+)(\d+)/g);
 		const noMentions = 'please mention someone to ban!';
+		const cannotBanModMessage = 'you cannot ban a mod!';
+
 		let reason;
+
+		const banUser = async (guildMember, reason) => {
+			await guildMember.ban({
+				reason
+			});
+
+			await message.channel.send(`***${guildMember.user.tag}*** has been successfully banned for \`${reason}\`.`);
+			await Blacklist.create({
+				guildID: message.guild.id,
+				guildName: message.guild.name,
+				userID: guildMember.user.id,
+				userTag: guildMember.user.tag,
+				reason: reason.split(' ').join(' ')
+			});
+		}
 
 		const ban = async (userArr, userArrIDs, reason) => {
 			const realBanMentions = async userNewArr => {
@@ -22,20 +39,9 @@ module.exports = {
 						continue;
 					}
 
-					if(guildMember && guildMember.hasPermission('BAN_MEMBERS')) return await message.reply('you cannot ban a mod!');
+					if(guildMember && guildMember.hasPermission('BAN_MEMBERS')) return await message.reply(cannotBanModMessage);
 
-					await guildMember.ban({
-						reason
-					});
-
-					await message.channel.send(`***${guildMember.user.tag}*** has been successfully banned for \`${reason}\`.`);
-					await Blacklist.create({
-						guildID: message.guild.id,
-						guildName: message.guild.name,
-						userID: guildMember.user.id,
-						userTag: guildMember.user.tag,
-						reason: reason.split(' ')[1]
-					});
+					await banUser(guildMember, reason)
 				}
 			};
 
@@ -48,20 +54,9 @@ module.exports = {
 						continue;
 					}
 
-					if(guildMember.hasPermission('BAN_MEMBERS')) return await message.reply('you cannot ban a mod!');
+					if(guildMember && guildMember.hasPermission('BAN_MEMBERS')) return await message.reply(cannotBanModMessage);
 
-					await guildMember.ban({
-						reason
-					});
-
-					await message.channel.send(`***${guildMember.user.tag}*** has been successfully banned for \`${reason}\`.`);
-					await Blacklist.create({
-						guildID: message.guild.id,
-						guildName: message.guild.name,
-						userID: guildMember.user.id,
-						userTag: guildMember.user.tag,
-						reason: reason.split(' ')[1]
-					});
+					await banUser(guildMember, reason);
 				}
 			};
 

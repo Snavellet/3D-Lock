@@ -5,7 +5,7 @@ module.exports = {
     name: 'cat',
     description: 'The purpose of this command is to generate cat images.',
     cooldown: 5,
-    async execute(message, args) {
+    async execute(message) {
         let data = await fetch('https://api.thecatapi.com/v1/images/search');
         data = await data.json();
         data = data[0].url;

@@ -12,115 +12,82 @@ module.exports = {
 
 		const matchedIDs = message.content.match(/(\s+)(\d+)/g);
 		const noMentions = 'please mention someone to warn!';
+		const cannotWarnModMessage = 'you cannot warn a mod!';
+		const userDoesntExistMessage = 'doesnt exist in this server anymore!';
+
 		let reason;
+
+		const warnManage = async (guildMember, reason) => {
+			let warning = await Warning.findOne({ guildID: guildMember.guild.id, userID: guildMember.id });
+			if(!warning) {
+				warning = await Warning.create({
+					guildID: message.guild.id,
+					guildName: message.guild.name,
+					userID: guildMember.user.id,
+					userTag: guildMember.user.tag,
+					warnings: process.env.WARNING_INITIAL * 1
+				});
+			} else {
+				warning = await Warning.findOneAndUpdate({
+					guildID: message.guild.id,
+					userID: guildMember.user.id
+				}, {
+					guildName: message.guild.name,
+					userTag: guildMember.user.tag,
+					warnings: warning.warnings + 1
+				}, { upsert: true, new: true })
+			}
+
+			let warningThreshold = await WarningThreshold.findOne({ guildID: message.guild.id });
+			if(!warningThreshold) return await message.reply('cannot check for the warning threshold, please try again later!');
+			warningThreshold = warningThreshold.threshold;
+			warning = warning.warnings;
+
+			if(warning >= warningThreshold) {
+				await message.channel.send(`<@${guildMember.user.id}>, you have reached \`${warning}\` warning(s) out of \`${warningThreshold}\`, you will be banned!`);
+
+				await Blacklist.create({
+					guildID: message.guild.id,
+					guildName: message.guild.name,
+					userID: guildMember.user.id,
+					userTag: guildMember.user.tag,
+					reason: reason.split(' ')[1]
+				});
+
+				return await guildMember.ban({
+					reason
+				});
+			}
+
+			await message.channel.send(`<@${guildMember.user.id}>, you have \`${warning}\` warning(s) out of \`${warningThreshold}\` for \`${reason.split(' ').join(' ')}\``);
+		}
 
 		const warn = async (userArr, userArrIDs, reason) => {
 			const realWarnMentions = async userNewArr => {
 				for(const user in userNewArr) {
 					const guildMember = message.guild.members.get(userNewArr[user].id);
-					if(guildMember.hasPermission('KICK_MEMBERS')) return await message.reply('you cannot warn a mod!');
+					if(guildMember.hasPermission('KICK_MEMBERS')) return await message.reply(cannotWarnModMessage);
 
 					if(!guildMember) {
-						await message.reply(`${userNewArr[user].id} doesnt exist in this server anymore!`);
+						await message.reply(`${userNewArr[user].id} ${userDoesntExistMessage}`);
 						continue;
 					}
 
-					let warning = await Warning.findOne({ guildID: guildMember.guild.id, userID: guildMember.id });
-					if(!warning) {
-						warning = await Warning.create({
-							guildID: message.guild.id,
-							guildName: message.guild.name,
-							userID: guildMember.user.id,
-							userTag: guildMember.user.tag,
-							warnings: process.env.WARNING_INITIAL * 1
-						});
-					} else {
-						warning = await Warning.findOneAndUpdate({
-							guildID: message.guild.id,
-							userID: guildMember.user.id
-						}, {
-							guildName: message.guild.name,
-							userTag: guildMember.user.tag,
-							warnings: warning.warnings + 1
-						}, { upsert: true, new: true })
-					}
-
-					let warningThreshold = await WarningThreshold.findOne({ guildID: message.guild.id });
-					if(!warningThreshold) return await message.reply('cannot check for the warning threshold, please try again later!');
-					warningThreshold = warningThreshold.threshold;
-					warning = warning.warnings;
-
-					if(warning >= warningThreshold) {
-						await message.channel.send(`<@${guildMember.user.id}>, you have reached \`${warning}\` warning(s) out of \`${warningThreshold}\`, you will be banned!`);
-
-						await Blacklist.create({
-							guildID: message.guild.id,
-							guildName: message.guild.name,
-							userID: guildMember.user.id,
-							userTag: guildMember.user.tag,
-							reason: reason.split(' ')[1]
-						});
-
-						return await guildMember.ban({
-							reason
-						});
-					}
-
-					await message.channel.send(`<@${guildMember.user.id}>, you have \`${warning}\` warning(s) out of \`${warningThreshold}\` for \`${reason.split(' ')[1]}\``);
+					await warnManage(guildMember, reason);
 				}
 			};
 
 			const realWarnIDs = async userNewIDsArray => {
 				for(const user in userNewIDsArray) {
 					const guildMember = message.guild.members.get(userNewIDsArray[user]);
+					if(guildMember.hasPermission('KICK_MEMBERS')) return await message.reply(cannotWarnModMessage);
 
 					if(!guildMember) {
-						await message.reply(`${userNewIDsArray[user]} doesnt exist in this server anymore!`);
+						await message.reply(`${userNewIDsArray[user]} ${userDoesntExistMessage}`);
 						continue;
 					}
 
-					let warning = await Warning.findOne({ guildID: guildMember.guild.id, userID: guildMember.id });
-					if(!warning) {
-						warning = await Warning.create({
-							guildID: message.guild.id,
-							guildName: message.guild.name,
-							userID: guildMember.user.id,
-							userTag: guildMember.user.tag,
-							warnings: process.env.WARNING_INITIAL * 1
-						});
-					} else {
-						warning = await Warning.findOneAndUpdate({
-							guildID: message.guild.id,
-							userID: guildMember.user.id
-						}, {
-							guildName: message.guild.name,
-							userTag: guildMember.user.tag,
-							warnings: warning.warnings + 1
-						}, { upsert: true, new: true })
-					}
-
-					let warningThreshold = await WarningThreshold.findOne({ guildID: message.guild.id });
-					if(!warningThreshold) return await message.reply('cannot check for the warning threshold, please try again later!');
-					warningThreshold = warningThreshold.threshold;
-					warning = warning.warnings;
-
-					if(warning >= warningThreshold) {
-						await message.channel.send(`<@${guildMember.user.id}>, you have reached \`${warning}\` warning(s) out of \`${warningThreshold}\`, you will be banned!`);
-
-						await Blacklist.create({
-							guildID: message.guild.id,
-							guildName: message.guild.name,
-							userID: guildMember.user.id,
-							userTag: guildMember.user.tag,
-							reason: reason.split(' ')[1]
-						});
-
-						return await guildMember.ban({
-							reason
-						});
-					}
-
-					await message.channel.send(`<@${guildMember.user.id}>, you have \`${warning}\` warning(s) out of \`${warningThreshold}\` for \`${reason.split(' ')[1]}\``);
+					await warnManage(guildMember, reason);
 				}
 			};
 

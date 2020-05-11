@@ -5,7 +5,7 @@ module.exports = {
 	name: 'meme',
 	cooldown: 5,
 	description: 'The purpose of this command is to generate a meme.',
-	async execute(message, args) {
+	async execute(message) {
 		let data = await fetch('https://meme-api.herokuapp.com/gimme');
 		data = await data.json();
 		data = new Discord.RichEmbed()

@@ -7,6 +7,7 @@ const client = require('./app');
 
 (async () => {
     try {
+        // noinspection JSValidateTypes
         await connect(process.env.DATABASE, {
             useNewUrlParser: true,
             useFindAndModify: false,

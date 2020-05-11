@@ -1,5 +1,4 @@
-const roleCreateAndUpdate = require('../../utils/createAndUpdateRoles');
-const roleSame = require('../../utils/roleSame');
+const GuildUtil = require('../../utils/GuildUtil');
 
 module.exports = {
 	name: 'botrole',
@@ -12,13 +11,6 @@ module.exports = {
 		let role = message.guild.roles.get(args[0]);
 		const event = 'bot';
 
-		if(!role) return await message.reply('invalid role ID, please try again.');
-		if(await roleSame(message.guild.id, event, role.id)) {
-			return await message.reply('that\'s the role that is currently set to!');
-		}
-
-		role = await roleCreateAndUpdate(message.guild, role, event);
-
-		await message.reply(`successfully set the role to <@&${role.roleID}>!`);
+		await GuildUtil.roleManage(message, role, event);
 	},
 };

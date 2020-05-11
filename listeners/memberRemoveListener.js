@@ -1,7 +1,7 @@
 const User = require('../models/userModel');
-const catchAsyncMember = require('../utils/catchAsync/catchAsyncMemberRemove');
+const CatchAsync = require('../utils/CatchAsync');
 
-module.exports = catchAsyncMember(async member => {
+module.exports = new CatchAsync(async member => {
     if(member.user.bot) return;
 
     const user = await User.findOne({ guildID: member.guild.id, userID: member.user.id });
@@ -9,4 +9,4 @@ module.exports = catchAsyncMember(async member => {
     if(user) {
         await User.findOneAndDelete({ userID: member.user.id});
     }
-});
+}).memberRemove();

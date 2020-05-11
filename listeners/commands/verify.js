@@ -1,8 +1,6 @@
 const User = require('../../models/userModel');
 const Role = require('../../models/roleModel');
-const roleExistCheck = require('../../utils/roleExist');
-const getPrefix = require('../../utils/getPrefix');
-const generateCode = require('../../utils/generateVerificationCode');
+const GuildUtil = require('../../utils/GuildUtil');
 
 module.exports = {
 	name: 'verify',
@@ -11,19 +9,25 @@ module.exports = {
 	cooldown: 5,
 	async execute(message, args) {
 		let role = await Role.findOne({ guildID: message.guild.id, event: 'beforeVerification' });
-		if(!role || !await roleExistCheck(message.guild, role.roleID, 'autorole')) return await message.reply('please contact the admins for assistance, I cannot check whether you are unverified.');
+		const contactMessage = '\'please contact the admins for assistance, I cannot check whether you are' +
+			' unverified.\'';
+		if(!role) return await message.reply(contactMessage);
+		role.id = role.roleID;
+		let guildUtil = new GuildUtil(message.guild, role);
+		if(!await guildUtil.roleExist('autorole')) return await message.reply(contactMessage);
+
 		if(!message.member.roles.has(role.roleID)) return;
 
 		const user = await User.findOne({ guildID: message.guild.id, userID: message.author.id });
 
 		const invalidMessage = async (message, verificationCode) => {
 			await message.reply('your code is either **invalid** or it has **expired**, I will send you a new one.')
-			const prefix = await getPrefix(message.member.guild.id, message.member.guild.name);
+			const prefix = await guildUtil.getPrefix();
 			return message.channel.send(`Please say \`${prefix}verify ${verificationCode}\` to verify again, remember this code ***expires*** in **${process.env.VERIFICATION_EXPIRE} minutes**.`);
 		}
 
 		if(!user) {
-			const verificationCode = await generateCode(message.guild, message.author);
+			const verificationCode = await new GuildUtil(message.guild).generateVerificationCode(message.author);
 			return await invalidMessage(message, verificationCode);
 		}
 
@@ -34,7 +38,10 @@ module.exports = {
 		}
 
 		role = await Role.findOne({ guildID: message.guild.id, event: 'afterVerification' });
-		if(!role || !await roleExistCheck(message.guild, role.roleID, 'aftver')) return await message.reply('please contact the admins for assistance, the after verification is not set yet.');
+		if(!role) return await message.reply(contactMessage);
+		role.id = role.roleID;
+		guildUtil = new GuildUtil(message.guild, role);
+		if(!await guildUtil.roleExist('aftver')) return await message.reply(contactMessage);
 
 		await User.findOneAndDelete({ guildID: message.guild.id, userID: message.author.id });
 

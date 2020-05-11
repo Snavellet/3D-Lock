@@ -38,7 +38,7 @@ module.exports = client => {
 				await stopBypass(allUsers[i], member);
 			}
 
-		}, 5000);
+		}, 30000);
 
 
 		await client.user.setPresence({
