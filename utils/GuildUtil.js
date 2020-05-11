@@ -45,20 +45,30 @@ class GuildUtil {
     }
 
     async createAndUpdateRoles(event) {
+        const newRoleObj = this.giveNewRoleObj();
         return Role.findOneAndUpdate({
             guildID: this.guild.id,
             event
         }, {
             guildID: this.guild.id,
             guildName: this.guild.name,
-            roleID: this.role.id,
-            roleName: this.role.name,
+            roleID: newRoleObj.id,
+            roleName: newRoleObj.name,
             event
         }, { upsert: true, new: true });
     }
 
+    giveNewRoleObj() {
+        return {
+            name: (this.role.name && this.guild.roles.array().filter(el => el.name === this.role.name).length >= 1) ? this.role.roleName: this.role.name,
+            id: !this.guild.roles.get(this.role.id) ? this.role.roleID : this.role.id
+        }
+    }
+
     async roleExist(command) {
-        const exist = this.guild.roles.some(fn => fn.id === this.role.id);
+        const newRoleObj = this.giveNewRoleObj();
+        // previous this.role.id which is causing the error
+        const exist = this.guild.roles.some(fn => fn.id === newRoleObj.id);
         if(exist) return true;
 
         let members = this.guild.members.array();
@@ -68,7 +78,8 @@ class GuildUtil {
         let prefix = await Prefix.findOne({ guildID: this.guild.id });
         prefix = prefix.prefix;
 
-        const roleName = this.guild.roles.get(this.role.id).name;
+
+        const roleName = this.guild.roles.get(newRoleObj.id).name;
 
         for(const i in members) {
             const invalidRoleEmbed = new Discord.RichEmbed()
@@ -86,10 +97,11 @@ class GuildUtil {
     }
 
     async roleSame(event) {
+        const newRoleObj = this.giveNewRoleObj();
         const role = await Role.findOne({ guildID: this.guild.id, event });
         if(!role) return;
 
-        return role.roleID === this.role.id;
+        return role.roleID === newRoleObj.id;
     }
 
     static async roleManage(message, role, event) {

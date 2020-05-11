@@ -12,7 +12,6 @@ module.exports = {
 		const contactMessage = '\'please contact the admins for assistance, I cannot check whether you are' +
 			' unverified.\'';
 		if(!role) return await message.reply(contactMessage);
-		role.id = role.roleID;
 		let guildUtil = new GuildUtil(message.guild, role);
 		if(!await guildUtil.roleExist('autorole')) return await message.reply(contactMessage);
 
@@ -39,7 +38,6 @@ module.exports = {
 
 		role = await Role.findOne({ guildID: message.guild.id, event: 'afterVerification' });
 		if(!role) return await message.reply(contactMessage);
-		role.id = role.roleID;
 		guildUtil = new GuildUtil(message.guild, role);
 		if(!await guildUtil.roleExist('aftver')) return await message.reply(contactMessage);
 

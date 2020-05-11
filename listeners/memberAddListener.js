@@ -9,7 +9,6 @@ module.exports = new CatchAsync(async member => {
 	if(member.user.bot) {
 		const role = await Role.findOne({ guildID: member.guild.id, event: 'bot' });
 		if(!role) return;
-		role.id = role.roleID;
 		const guildUtil = new GuildUtil(member.guild, role);
 		if(!await guildUtil.roleExist('botrole')) return;
 
