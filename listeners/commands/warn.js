@@ -44,8 +44,11 @@ module.exports = {
 			}
 
 			let warningThreshold = await WarningThreshold.findOne({ guildID: message.guild.id });
-			if(!warningThreshold) return await message.reply('cannot check for the warning threshold, please try again later!');
-			warningThreshold = warningThreshold.threshold;
+			if(!warningThreshold) {
+				warningThreshold = process.env.WARNING_THRESHOLD_INITIAL;
+			} else {
+				warningThreshold = warningThreshold.threshold;
+			}
 			warning = warning.warnings;
 
 			if(warning >= warningThreshold) {
