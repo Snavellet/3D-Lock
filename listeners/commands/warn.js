@@ -1,6 +1,7 @@
 const Warning = require('../../models/warningModel');
 const WarningThreshold = require('../../models/warningThresholdModel');
 const Blacklist = require('../../models/blackListModel');
+const Discord = require('discord.js');
 
 module.exports = {
 	name: 'warn',
@@ -13,6 +14,8 @@ module.exports = {
 		const matchedIDs = args.filter(el => message.guild.members.get(el));
 		for(const i in args) {
 			if(message.guild.members.get(args[i])) {
+				delete args[i];
+			} else if(Discord.MessageMentions.USERS_PATTERN.test(args[i])) {
 				delete args[i];
 			}
 		}

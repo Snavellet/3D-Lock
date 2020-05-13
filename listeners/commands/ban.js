@@ -1,3 +1,4 @@
+const Discord = require('discord.js');
 const Blacklist = require('../../models/blackListModel');
 
 module.exports = {
@@ -11,6 +12,8 @@ module.exports = {
 		const matchedIDs = args.filter(el => message.guild.members.get(el));
 		for(const i in args) {
 			if(message.guild.members.get(args[i])) {
+				delete args[i];
+			} else if(Discord.MessageMentions.USERS_PATTERN.test(args[i])) {
 				delete args[i];
 			}
 		}
