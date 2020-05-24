@@ -75,9 +75,7 @@ class GuildUtil {
         members = members.filter(fn => !fn.user.bot);
         members = members.filter(fn => fn.hasPermission('MANAGE_ROLES'));
 
-        let prefix = await Prefix.findOne({ guildID: this.guild.id });
-        prefix = prefix.prefix;
-
+        const prefix = await this.getPrefix();
 
         const roleName = this.guild.roles.get(newRoleObj.id).name;
 

@@ -1,6 +1,6 @@
 const User = require('../models/userModel');
 const Role = require('../models/roleModel');
-const Prefix = require('../models/prefixModel');
+const GuildUtil = require('../utils/GuildUtil');
 const logger = require('../utils/logger');
 
 module.exports = client => {
@@ -8,11 +8,13 @@ module.exports = client => {
 		logger.info(`Logged in successfully as ${client.user.tag}.`);
 
 		const mainServer = client.guilds.get(process.env.MAIN_SERVER);
-		let roleID = await Role.findOne({ guildID: mainServer.id, event: 'beforeVerification' });
+		const guildUtil = new GuildUtil(mainServer);
+
+		let roleID = await Role.findOne({ event: 'beforeVerification' });
+		if(!roleID) return;
 		roleID = roleID.roleID;
 
-		let prefix = await Prefix.findOne({ guildID: mainServer.id });
-		prefix = prefix.prefix;
+		const prefix = await guildUtil.getPrefix();
 
 		const stopBypass = async (allUsers, member) => {
 			const verificationCode = allUsers.updateVerificationCode();
