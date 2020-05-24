@@ -1,0 +1,16 @@
+version: "2.2"
+
+services:
+    3dlock-bot:
+        image: snavellet/3d-lock-bot
+        environment:
+            # TOKEN, DATABASE, MAIN_SERVER (INSERT SERVER ID) are required for the bot to work fully and make sure to insert them without quotes.
+            TOKEN: 
+            DATABASE: 
+            DEFAULT_PREFIX: '='
+            VERIFICATION_EXPIRE: 5
+            TRANSFER_AFTER_VERIFICATION: 3
+            MAIN_SERVER: 
+            VERIFICATION_CODE_SIZE: 12
+            WARNING_INITIAL: 1
+            WARNING_THRESHOLD_INITIAL: 3
