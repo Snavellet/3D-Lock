@@ -2,3 +2,4 @@ node_modules
 config.env
 .idea
 utils/stackTrace
+docker-compose.yml

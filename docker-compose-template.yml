@@ -1,3 +1,4 @@
+# Rename this file to docker-compose.yml
 version: "2.2"
 
 services:
